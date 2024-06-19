@@ -285,13 +285,13 @@ class KITTmodel:
                             mode = "deceleration"
                 count += 1
             else:
-                commands.append(('e', 0.3))
+                commands.append(('e', 0.2))
                 count = 0
             current_position = self.position(mode, self.angle)
             x_data.append(current_position[0])  # Save x coordinate of the car
             y_data.append(current_position[1])  # Save y coordinate of the car
         
-        commands.append(('e', 0.3))
+        commands.append(('e', 0.2))
         return x_data, y_data, commands
 
     
@@ -377,8 +377,8 @@ def plot(x, y, start_position, target):
 
 if __name__ == "__main__":
     kitt = KITTmodel()
-    b = [2.68, 3.18] 
-    z = [2.18, 3.18] 
+    b = [1.3, 0.18] 
+    z = [0.18, 0.18] 
     d = [0, 1]
     x_data, y_data, commands = kitt.check_coordinates(b, z)
                                        

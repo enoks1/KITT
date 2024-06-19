@@ -8,8 +8,8 @@ class KITTmodel:
         self.v = 0
         self.dt = 0.01
         self.L = 0.335
-        self.z = np.array([0, 0]) #position
-        self.d = np.array([0, 1]) #direction
+        self.z = np.array([0, 0])  # position
+        self.d = np.array([0, 1])  # direction
         self.angle = 0
 
     def velocity(self, mode):
@@ -58,9 +58,8 @@ class KITTmodel:
         self.d = np.dot(r, self.d)  # calculate the new direction vector
         
     def position(self, mode, alpha):
-        self.velocity(mode) #calculate the velocity
-        self.direction(alpha) #determine the directionspee
-        print(self.v)
+        self.velocity(mode)  # calculate the velocity
+        self.direction(alpha)  # determine the direction
         self.z = self.z + self.v * self.dt * self.d  # determine the new position of the car
         return self.z
     
@@ -81,10 +80,10 @@ def wasd(kitt, command=None):
         pos = kitt.position("acceleration left", kitt.angle)
     elif key == 's':  # straight
         kitt.angle = 0
-        pos = kitt.position("acceleration", kitt.angle)
+        pos = kitt.position("acceleration right", kitt.angle)
     elif key == 'd':  # right
         kitt.angle = 24.3
-        pos = kitt.position("acceleration right", kitt.angle)
+        pos = kitt.position("acceleration", kitt.angle)
     elif key == 'x':  # straight Backwards
         kitt.angle = 0
         pos = kitt.position("deceleration", kitt.angle)
@@ -95,6 +94,7 @@ def wasd(kitt, command=None):
         kitt.angle = -24.9
         pos = kitt.position("left reverse", kitt.angle)
     return pos
+        
         
 def execute_commands(commands):
     kitt = KITTmodel()
@@ -111,13 +111,15 @@ def plot(x, y):
     plt.plot(x, y)
     plt.xlabel('X Position')
     plt.ylabel('Y Position')
-    plt.xlim(-2.5, 2.5)
-    plt.ylim(-2.5, 2.5)
-    plt.title('KITT Model Position')
+    plt.xlim(0, 1.8)
+    plt.ylim(-1, 1)
+    plt.title('KITT Model Position - Circular Motion Test')
+    plt.grid(True)
+    plt.gca().set_aspect('equal', adjustable='box')
     plt.show()
            
 if __name__ == "__main__":
-    commands = [ ('a', 8.1), ('e', 1)]  
+    # Circular motion test commands
+    commands = [('a', 12)]  # Test for circular motion with continuous left turn
     x_data, y_data = execute_commands(commands)
     plot(x_data, y_data)
-    print(y_data[-1])

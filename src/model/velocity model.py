@@ -12,35 +12,61 @@ T = 8            # total simulation time in seconds
 # Time array
 t = np.arange(0, T, dt)
 
-def simulate(F_max, initial_velocity, mode='acceleration'):
+def simulate(initial_velocity, mode='acceleration'):
     N = len(t)
     v = np.zeros(N)
     z = np.zeros(N)
     v[0] = initial_velocity
-
+    m = 5.6  # mass of the car
+    b = 10.2  # viscous drag coefficient
     for i in range(1, N):
         # Calculate drag force linearly dependent on the velocity
         Fd = b * abs(v[i-1])  # use abs to ensure drag is always opposite to motion
         
-        if mode == 'deceleration':
-            # During deceleration, both braking and drag forces slow down the car
-            F_net = -F_max + Fd  # Notice the drag adds to the braking force
-        else:
-            # During acceleration, subtract drag from engine force
-            F_net = F_max - Fd
+        match mode:
+            case "acceleration":
+                if v[i-1] < 0:
+                    F_net = 7.36 + Fd  # net force equal to max Fa + Fd
+                else:
+                    F_net = 7.36 - Fd  # net force equal to max Fa - Fd
+            case "acceleration right":
+                if v[i-1]  < 0:
+                    F_net = 5.9 + Fd  # net force equal to max Fa + Fd
+                else:
+                    F_net = 5.9 - Fd  # net force equal to max Fa - Fd
+            case "acceleration left":
+                if v[i-1]  < 0:
+                    F_net = 5.94 + Fd  # net force equal to max Fa + Fd
+                else:
+                    F_net = 5.94 - Fd  # net force equal to max Fa - Fd        
+            case 'deceleration':
+                if v[i-1]  < 0:
+                    F_net = -8.29 + Fd  # net force equal to max Fb + Fd
+                else:
+                    F_net = -8.29 - Fd  # net force equal to max Fb - Fd 
+            case 'left reverse':
+                if v[i-1]  > 0:
+                    F_net = -6.58 - Fd  # net force equal to max Fb - Fd
+                else:
+                    F_net = -6.58 + Fd  # net force equal to max Fb + Fd
+            case 'right reverse':
+                if v[i-1]  > 0:
+                    F_net = -6.53 - Fd  # net force equal to max Fb - Fd
+                else:
+                    F_net = -6.53 + Fd  # net force equal to max Fb + Fd     
 
         # Acceleration calculation
         a = F_net / m
         v[i] = v[i-1] + a * dt
         z[i] = z[i-1] + v[i-1] * dt + 0.5 * a * dt**2
-
+            
     return v, z
 
 # Simulation for Acceleration
-v_accel, z_accel = simulate(Fa_max, 0, mode='acceleration')
+v_accel, z_accel = simulate(0, mode='acceleration')
 
 # Simulation for Deceleration from a starting speed
-v_decel, z_decel = simulate(Fb_max, v_accel[-1], mode='deceleration')
+v_decel, z_decel = simulate(v_accel[-1], mode='deceleration')
 
 # Plotting
 plt.figure(figsize=(12, 10))
